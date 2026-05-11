@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\bugfix\" | ForEach-Object { Move-Item $_.FullName \"C:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\$\\($_.Name\\)\" -Force }; Remove-Item \"C:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\bugfix\" -Recurse -Force -Confirm:$false)",
+      "PowerShell(npm install three @react-three/fiber @react-three/drei gsap framer-motion @supabase/supabase-js groq-sdk lucide-react zustand 2>&1)",
+      "PowerShell(npm install three @react-three/fiber @react-three/drei gsap framer-motion @supabase/supabase-js groq-sdk lucide-react zustand --legacy-peer-deps 2>&1)",
+      "PowerShell(npx next build 2>&1)",
+      "PowerShell(Move-Item \"c:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\logo.png\" \"c:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\public\\\\logo.png\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"c:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\public\" -Force)",
+      "PowerShell(Move-Item \"c:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\logo.png\" \"c:\\\\Users\\\\User\\\\Desktop\\\\bugfix\\\\public\\\\logo.png\")",
+      "PowerShell(npm install @react-three/fiber@8.15.19 @react-three/drei@9.88.17 three@0.160.0 --legacy-peer-deps 2>&1)",
+      "PowerShell(npm install -D @types/three@0.160.0 --legacy-peer-deps 2>&1)",
+      "PowerShell(New-Item -ItemType Directory -Path \"src/components/animations/animations\" -Force)",
+      "PowerShell(New-Item -ItemType Directory -Path \"src/components/animations/utils\" -Force)",
+      "Bash(npx next *)"
+    ]
+  }
+}

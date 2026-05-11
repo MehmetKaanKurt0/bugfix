@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0B0D1A;
+  --foreground: #ededed;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Global button hover/active */
+@layer components {
+  .btn-hover {
+    @apply transition-all duration-200;
+  }
+  .btn-hover:hover {
+    @apply scale-[1.02];
+  }
+  .btn-hover:active {
+    @apply scale-[0.98];
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #111328 25%,
+    #1a1d35 37%,
+    #111328 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* Top 3 podium effects */
+@keyframes goldOrbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes silverShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bronzePulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(205,127,50,0.15); }
+  50% { box-shadow: 0 0 24px rgba(205,127,50,0.35), 0 0 48px rgba(205,127,50,0.1); }
+}
+
+.podium-gold {
+  position: relative;
+  overflow: visible;
+}
+.podium-gold::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 18px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(255,215,0,0.4) 10%,
+    transparent 20%,
+    transparent 40%,
+    rgba(255,215,0,0.3) 50%,
+    transparent 60%,
+    transparent 80%,
+    rgba(255,215,0,0.35) 90%,
+    transparent 100%
+  );
+  animation: goldOrbit 4s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+.podium-gold::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: #111328;
+  z-index: -1;
+}
+
+.podium-silver {
+  background: linear-gradient(
+    90deg,
+    #111328 0%,
+    #111328 30%,
+    rgba(192,192,192,0.08) 50%,
+    #111328 70%,
+    #111328 100%
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: silverShimmer 3s ease-in-out infinite;
+}
+
+.podium-bronze {
+  animation: bronzePulse 3s ease-in-out infinite;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.4);
+}
