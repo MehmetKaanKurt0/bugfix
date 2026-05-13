@@ -99,10 +99,10 @@ function PodiumCard({
       layoutId={`podium-${team.id}`}
       animate={controls}
       transition={SPRING_TRANSITION}
-      className={`flex-1 max-w-[200px] bg-card-bg border rounded-2xl px-3 ${sizes} flex flex-col items-center justify-center text-center ${podiumEffect}
+      className={`flex-1 max-w-[200px] bg-card-bg rounded-2xl px-3 ${sizes} flex flex-col items-center justify-center text-center ${podiumEffect}
         ${isFirst
-          ? "border-yellow-500/30 shadow-[0_0_24px_rgba(255,215,0,0.1)]"
-          : displayIdx === 0 ? "border-white/[0.12]" : "border-amber-700/20"
+          ? "border border-yellow-500/30"
+          : displayIdx === 0 ? "border border-white/[0.12]" : "border border-amber-700/20"
         }
         ${showBadge && team.direction === "up"
           ? "ring-1 ring-emerald-500/30"
@@ -329,7 +329,7 @@ export default function LeaderboardPage() {
     podium.length === 3 ? [podium[1], podium[0], podium[2]] : podium;
 
   return (
-    <main className="relative min-h-screen bg-dark-bg pt-20 pb-12 px-4 overflow-hidden">
+    <main className="relative min-h-screen bg-dark-bg pt-20 pb-12 px-4 overflow-x-hidden">
       <BattleAnimationManager />
       <ConnectionBanner />
 
@@ -369,24 +369,6 @@ export default function LeaderboardPage() {
           }}
         />
       </div>
-
-      <style jsx>{`
-        @keyframes orbFloat1 {
-          0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(60px, -40px); }
-          66% { transform: translate(-30px, 50px); }
-        }
-        @keyframes orbFloat2 {
-          0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(-50px, 30px); }
-          66% { transform: translate(40px, -60px); }
-        }
-        @keyframes orbFloat3 {
-          0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(40px, 40px); }
-          66% { transform: translate(-60px, -20px); }
-        }
-      `}</style>
 
       <div className="max-w-3xl mx-auto relative z-10">
         {/* Header */}

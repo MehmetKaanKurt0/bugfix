@@ -78,7 +78,7 @@ export default function HowItWorks() {
 
     gsap.set(cards, { opacity: 0, y: 60 });
 
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: "top 75%",
       once: true,
@@ -95,7 +95,7 @@ export default function HowItWorks() {
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      trigger.kill();
     };
   }, [hasAnimated]);
 

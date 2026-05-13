@@ -50,9 +50,15 @@ body {
 }
 
 /* Top 3 podium effects */
-@keyframes goldOrbit {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes goldGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(255,215,0,0.15), 0 0 2px rgba(255,215,0,0.1), inset 0 0 12px rgba(255,215,0,0.03);
+    border-color: rgba(255,215,0,0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 0 40px rgba(255,215,0,0.1), inset 0 0 20px rgba(255,215,0,0.05);
+    border-color: rgba(255,215,0,0.4);
+  }
 }
 
 @keyframes silverShimmer {
@@ -62,41 +68,11 @@ body {
 
 @keyframes bronzePulse {
   0%, 100% { box-shadow: 0 0 8px rgba(205,127,50,0.15); }
-  50% { box-shadow: 0 0 24px rgba(205,127,50,0.35), 0 0 48px rgba(205,127,50,0.1); }
+  50% { box-shadow: 0 0 20px rgba(205,127,50,0.3), 0 0 40px rgba(205,127,50,0.08); }
 }
 
 .podium-gold {
-  position: relative;
-  overflow: visible;
-}
-.podium-gold::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 18px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    rgba(255,215,0,0.4) 10%,
-    transparent 20%,
-    transparent 40%,
-    rgba(255,215,0,0.3) 50%,
-    transparent 60%,
-    transparent 80%,
-    rgba(255,215,0,0.35) 90%,
-    transparent 100%
-  );
-  animation: goldOrbit 4s linear infinite;
-  z-index: -1;
-  pointer-events: none;
-}
-.podium-gold::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  background: #111328;
-  z-index: -1;
+  animation: goldGlow 3s ease-in-out infinite;
 }
 
 .podium-silver {
@@ -114,6 +90,23 @@ body {
 
 .podium-bronze {
   animation: bronzePulse 3s ease-in-out infinite;
+}
+
+/* Leaderboard ambient orbs */
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(60px, -40px); }
+  66% { transform: translate(-30px, 50px); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-50px, 30px); }
+  66% { transform: translate(40px, -60px); }
+}
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(40px, 40px); }
+  66% { transform: translate(-60px, -20px); }
 }
 
 /* Smooth scrollbar */
