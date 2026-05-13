@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import AdminShell from "@/components/admin/AdminShell";
 
 export const metadata: Metadata = {
@@ -8,18 +7,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("bugfix_admin_token");
-  const isAuthenticated = token?.value === "authenticated";
-
-  if (!isAuthenticated) {
-    return <>{children}</>;
-  }
-
   return <AdminShell>{children}</AdminShell>;
 }

@@ -29,6 +29,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeRoundTitle, setActiveRoundTitle] = useState<string | null>(null);
+  const isLoginPage = pathname === "/admin";
 
   const fetchActiveRound = useCallback(async () => {
     try {
@@ -101,6 +102,10 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
       </div>
     </>
   );
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-dark-bg flex">
