@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
 import { Crown, Trophy, Volume2, VolumeX } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
-import BattleAnimationManager from "@/components/animations/BattleAnimationManager";
+import CinematicBattleManager from "@/components/animations/CinematicBattleManager";
 import ConnectionBanner from "@/components/ui/ConnectionBanner";
 import { SkeletonPodium, SkeletonRow } from "@/components/ui/Skeleton";
 import { useAppStore } from "@/lib/store";
@@ -330,7 +330,7 @@ export default function LeaderboardPage() {
 
   return (
     <main className="relative min-h-screen bg-dark-bg pt-20 pb-12 px-4 overflow-x-hidden">
-      <BattleAnimationManager />
+      <CinematicBattleManager />
       <ConnectionBanner />
 
       {/* Ambient orbs */}

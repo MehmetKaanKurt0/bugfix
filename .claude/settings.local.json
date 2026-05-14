@@ -12,7 +12,16 @@
       "PowerShell(npm install -D @types/three@0.160.0 --legacy-peer-deps 2>&1)",
       "PowerShell(New-Item -ItemType Directory -Path \"src/components/animations/animations\" -Force)",
       "PowerShell(New-Item -ItemType Directory -Path \"src/components/animations/utils\" -Force)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "PowerShell(git add next.config.mjs src/app/globals.css src/app/leaderboard/page.tsx src/components/admin/AdminShell.tsx src/components/animations/HowItWorks.tsx src/lib/supabase.ts)",
+      "PowerShell(git push origin main)",
+      "PowerShell(git add src/app/admin/layout.tsx src/components/admin/AdminShell.tsx)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(mkdir -p public/fonts)",
+      "Bash(curl -L -o public/fonts/Orbitron-Bold.ttf \"https://raw.githubusercontent.com/google/fonts/main/ofl/orbitron/static/Orbitron-Bold.ttf\")"
     ]
   }
 }

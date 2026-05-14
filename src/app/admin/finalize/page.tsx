@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertTriangle, CheckCircle2, Clock, XCircle,
   Loader2, ChevronDown, ChevronUp, Flag, Minus,
 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
-import BattleOverlay, { type BattleOverlayHandle } from "@/components/animations/BattleOverlay";
+import CinematicBattleManager from "@/components/animations/CinematicBattleManager";
 import type { Team, Round, Submission } from "@/types";
+import type { RankingChange } from "@/lib/store";
 
 interface RoundEvent {
   id: string;
@@ -39,7 +40,6 @@ export default function FinalizePage() {
   const [confirming, setConfirming] = useState(false);
   const [finalizing, setFinalizing] = useState(false);
   const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
-  const battleRef = useRef<BattleOverlayHandle>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -95,11 +95,13 @@ export default function FinalizePage() {
 
       setConfirming(false);
 
-      if (data.ranking_changes && battleRef.current) {
-        await battleRef.current.playSequence(
-          activeRound.title,
-          data.ranking_changes
-        );
+      if (data.ranking_changes) {
+        const startCinematic = (window as unknown as Record<string, unknown>).__cinematicStart as
+          | ((title: string, changes: RankingChange[]) => Promise<void>)
+          | undefined;
+        if (startCinematic) {
+          await startCinematic(activeRound.title, data.ranking_changes);
+        }
       }
 
       toast("Tur sonlandırıldı!", "success");
@@ -362,7 +364,7 @@ export default function FinalizePage() {
           </div>
         </div>
       )}
-      <BattleOverlay ref={battleRef} />
+      <CinematicBattleManager />
     </div>
   );
 }
