@@ -6,16 +6,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Users, ListOrdered, Code, Flag, LogOut, Menu, X,
+  Users, ListOrdered, Code, Flag, LogOut, Menu, X, Trophy,
 } from "lucide-react";
 import ToastContainer from "@/components/ui/Toast";
-import BattleAnimationManager from "@/components/animations/BattleAnimationManager";
 
 const navItems = [
   { href: "/admin/teams", label: "Takımlar", icon: Users },
   { href: "/admin/rounds", label: "Turlar", icon: ListOrdered },
   { href: "/admin/grade", label: "Kod Değerlendir", icon: Code },
   { href: "/admin/finalize", label: "Tur Sonlandır", icon: Flag },
+  { href: "/leaderboard", label: "Sıralama", icon: Trophy },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -23,6 +23,7 @@ const pageTitles: Record<string, string> = {
   "/admin/rounds": "Turlar",
   "/admin/grade": "Kod Değerlendir",
   "/admin/finalize": "Tur Sonlandır",
+  "/leaderboard": "Sıralama",
 };
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
@@ -78,6 +79,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             <Link
               key={item.href}
               href={item.href}
+              {...(item.href.startsWith("/admin") ? {} : { target: "_blank" })}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors relative
                 ${isActive
                   ? "bg-primary/10 text-white border-l-2 border-primary"
@@ -111,7 +113,6 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-dark-bg flex">
       <ToastContainer />
-      <BattleAnimationManager />
 
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-[260px] bg-card-bg border-r border-white/[0.06] flex-col shrink-0">

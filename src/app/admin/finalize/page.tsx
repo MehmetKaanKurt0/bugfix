@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertTriangle, CheckCircle2, Clock, XCircle,
   Loader2, ChevronDown, ChevronUp, Flag, Minus,
 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
+import BattleOverlay, { type BattleOverlayHandle } from "@/components/animations/BattleOverlay";
 import type { Team, Round, Submission } from "@/types";
 
 interface RoundEvent {
@@ -38,6 +39,7 @@ export default function FinalizePage() {
   const [confirming, setConfirming] = useState(false);
   const [finalizing, setFinalizing] = useState(false);
   const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
+  const battleRef = useRef<BattleOverlayHandle>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -91,8 +93,16 @@ export default function FinalizePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      toast("Tur sonlandırıldı! Leaderboard'da animasyonlar başlıyor.", "success");
       setConfirming(false);
+
+      if (data.ranking_changes && battleRef.current) {
+        await battleRef.current.playSequence(
+          activeRound.title,
+          data.ranking_changes
+        );
+      }
+
+      toast("Tur sonlandırıldı!", "success");
       fetchData();
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : "Sonlandırma başarısız", "error");
@@ -352,6 +362,7 @@ export default function FinalizePage() {
           </div>
         </div>
       )}
+      <BattleOverlay ref={battleRef} />
     </div>
   );
 }
