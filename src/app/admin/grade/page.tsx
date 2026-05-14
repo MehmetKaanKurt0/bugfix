@@ -9,6 +9,7 @@ import {
 import { toast } from "@/components/ui/Toast";
 import CodeEditor from "@/components/admin/CodeEditor";
 import ScoreRing from "@/components/admin/ScoreRing";
+import ScoreCelebration from "@/components/animations/ScoreCelebration";
 import type { Team, Round, GradeResult } from "@/types";
 
 type Phase = "input" | "grading" | "result";
@@ -37,6 +38,11 @@ export default function GradePage() {
   const [customScore, setCustomScore] = useState("");
   const [showDetailedFeedback, setShowDetailedFeedback] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [celebration, setCelebration] = useState<{
+    teamName: string;
+    teamColor: string;
+    score: number;
+  } | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -128,16 +134,19 @@ export default function GradePage() {
 
       if (!res.ok) throw new Error((await res.json()).error);
 
-      const teamName = teams.find((t) => t.id === selectedTeamId)?.name;
+      const team = teams.find((t) => t.id === selectedTeamId);
 
       if (status === "approved") {
-        toast(`${teamName} +${finalScore} puan aldı!`, "success");
         setGradedTeamIds((prev) => new Set(prev).add(selectedTeamId));
+        setCelebration({
+          teamName: team?.name || "Takım",
+          teamColor: team?.avatar_color || "#4F46E5",
+          score: finalScore as number,
+        });
       } else {
-        toast(`${teamName} puanı reddedildi`, "error");
+        toast(`${team?.name} puanı reddedildi`, "error");
+        resetForm();
       }
-
-      resetForm();
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : "İşlem başarısız", "error");
     } finally {
@@ -333,6 +342,18 @@ export default function GradePage() {
           </div>
         </motion.div>
       )}
+
+      {/* Score Celebration */}
+      <ScoreCelebration
+        active={celebration !== null}
+        teamName={celebration?.teamName || ""}
+        teamColor={celebration?.teamColor || "#4F46E5"}
+        score={celebration?.score || 0}
+        onComplete={() => {
+          setCelebration(null);
+          resetForm();
+        }}
+      />
 
       {/* RESULT PHASE */}
       {phase === "result" && gradeResult && (

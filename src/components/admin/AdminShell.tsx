@@ -9,6 +9,7 @@ import {
   Users, ListOrdered, Code, Flag, LogOut, Menu, X,
 } from "lucide-react";
 import ToastContainer from "@/components/ui/Toast";
+import BattleAnimationManager from "@/components/animations/BattleAnimationManager";
 
 const navItems = [
   { href: "/admin/teams", label: "Takımlar", icon: Users },
@@ -110,6 +111,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-dark-bg flex">
       <ToastContainer />
+      <BattleAnimationManager />
 
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-[260px] bg-card-bg border-r border-white/[0.06] flex-col shrink-0">
