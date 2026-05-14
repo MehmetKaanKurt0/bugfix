@@ -100,7 +100,7 @@ export default function VictoryScene({ winner, scoreChange, progress }: VictoryS
           color="#FFD700"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/Orbitron-Bold.ttf"
+
           outlineWidth={0.03}
           outlineColor="#FF8C00"
         >
@@ -118,7 +118,7 @@ export default function VictoryScene({ winner, scoreChange, progress }: VictoryS
             color="#FFFFFF"
             anchorX="center"
             anchorY="middle"
-            font="/fonts/Orbitron-Bold.ttf"
+  
             outlineWidth={0.01}
             outlineColor={winner.color}
           >

@@ -78,7 +78,7 @@ export default function TextEffect({
         color={color}
         anchorX="center"
         anchorY="middle"
-        font="/fonts/Orbitron-Bold.ttf"
+
         outlineWidth={fontSize * 0.02}
         outlineColor={glowColor || color}
       >

@@ -57,7 +57,7 @@ function TeamSphere({
         anchorX="center"
         anchorY="top"
         position={[0, -1.5, 0]}
-        font="/fonts/Orbitron-Bold.ttf"
+
         outlineWidth={0.01}
         outlineColor={color}
       >
@@ -146,7 +146,7 @@ export default function VSScene({
           color="#FFD700"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/Orbitron-Bold.ttf"
+  
           outlineWidth={0.05}
           outlineColor="#FF8C00"
         >
@@ -180,7 +180,7 @@ export default function VSScene({
           color="#FFFFFF"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/Orbitron-Bold.ttf"
+  
           letterSpacing={0.3}
         >
           {roundTitle}

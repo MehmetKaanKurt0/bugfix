@@ -110,8 +110,7 @@ function BattleCell({
           color="#FFD700"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/Orbitron-Bold.ttf"
-        >
+                  >
           {`+${battle.attacker.scoreChange}`}
         </Text>
       )}
@@ -145,8 +144,7 @@ export default function MultiTeamScene({ battles, progress }: MultiTeamSceneProp
         color="#FFFFFF"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/Orbitron-Bold.ttf"
-        outlineWidth={0.02}
+                outlineWidth={0.02}
         outlineColor="#7C3AED"
       >
         {progress < 0.3 ? "HAZIRLAN" : progress < 0.6 ? "SAVAŞ!" : "SONUÇ"}

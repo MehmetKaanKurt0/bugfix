@@ -91,7 +91,7 @@ export default function IntroScene({ roundTitle, progress }: IntroSceneProps) {
           anchorX="center"
           anchorY="middle"
           position={[0, 0.5, 0]}
-          font="/fonts/Orbitron-Bold.ttf"
+
           outlineWidth={0.02}
           outlineColor="#7C3AED"
         >
@@ -107,7 +107,7 @@ export default function IntroScene({ roundTitle, progress }: IntroSceneProps) {
           color="#7C3AED"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/Orbitron-Bold.ttf"
+
         >
           {displaySub}
           <meshBasicMaterial color="#7C3AED" toneMapped={false} opacity={0.6} transparent />
@@ -120,7 +120,7 @@ export default function IntroScene({ roundTitle, progress }: IntroSceneProps) {
           color="#FFFFFF"
           anchorX="center"
           anchorY="middle"
-          font="/fonts/Orbitron-Bold.ttf"
+
         >
           {roundTitle}
           <meshBasicMaterial color="#FFFFFF" toneMapped={false} opacity={0.3 * fadeOut} transparent />
