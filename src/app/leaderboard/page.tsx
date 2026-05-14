@@ -451,7 +451,7 @@ export default function LeaderboardPage() {
 
             {podium.length > 0 && podium.length < 3 && (
               <div className="hidden md:flex items-end justify-center gap-4 mb-10">
-                {podium.map((team, i) => (
+                {(podium.length === 2 ? [podium[1], podium[0]] : podium).map((team, i) => (
                   <PodiumCard key={team.id} team={team} displayIdx={podium.length === 1 ? 1 : i} showBadge={showBadges} />
                 ))}
               </div>

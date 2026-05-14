@@ -24,33 +24,42 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Tur bulunamadı" }, { status: 404 });
   }
 
-  // Snapshot current rankings (before any updates)
-  const { data: teamsBefore } = await supabase
+  // Get approved submissions for this round (scores already applied to teams)
+  const { data: roundSubs } = await supabase
+    .from("submissions")
+    .select("team_id, final_score")
+    .eq("round_id", round_id)
+    .eq("status", "approved");
+
+  const roundScoreMap = new Map<string, number>();
+  for (const sub of roundSubs || []) {
+    roundScoreMap.set(sub.team_id, sub.final_score || 0);
+  }
+
+  // Get current teams (scores already include this round)
+  const { data: currentTeams } = await supabase
     .from("teams")
     .select("*")
     .order("total_score", { ascending: false });
 
-  if (!teamsBefore) {
+  if (!currentTeams) {
     return NextResponse.json({ error: "Takımlar yüklenemedi" }, { status: 500 });
   }
 
+  // Calculate old scores (before this round) to find old rankings
+  const teamsWithOldScores = currentTeams.map((t) => ({
+    ...t,
+    old_score: t.total_score - (roundScoreMap.get(t.id) || 0),
+  }));
+
+  const oldRanking = [...teamsWithOldScores].sort((a, b) => b.old_score - a.old_score);
   const oldRankMap = new Map<string, { rank: number; score: number }>();
-  teamsBefore.forEach((t, i) => {
-    oldRankMap.set(t.id, { rank: i + 1, score: t.total_score });
+  oldRanking.forEach((t, i) => {
+    oldRankMap.set(t.id, { rank: i + 1, score: t.old_score });
   });
 
-  // Get new rankings after scores
-  const { data: teamsAfter } = await supabase
-    .from("teams")
-    .select("*")
-    .order("total_score", { ascending: false });
-
-  if (!teamsAfter) {
-    return NextResponse.json({ error: "Güncel sıralama alınamadı" }, { status: 500 });
-  }
-
-  // Build ranking_changes
-  const ranking_changes = teamsAfter.map((t, i) => {
+  // Build ranking_changes (current order is by total_score desc)
+  const ranking_changes = currentTeams.map((t, i) => {
     const old = oldRankMap.get(t.id);
     return {
       team_id: t.id,
@@ -60,7 +69,7 @@ export async function POST(req: NextRequest) {
       new_rank: i + 1,
       old_score: old?.score ?? 0,
       new_score: t.total_score,
-      score_change: t.total_score - (old?.score ?? 0),
+      score_change: roundScoreMap.get(t.id) || 0,
     };
   });
 
