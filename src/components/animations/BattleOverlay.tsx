@@ -129,6 +129,9 @@ const BattleOverlay = forwardRef<BattleOverlayHandle>(function BattleOverlay(_, 
     async playSequence(roundTitle: string, changes: RankingChange[]) {
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+      const scored = changes.filter((c) => c.score_change > 0).sort((a, b) => b.score_change - a.score_change);
+      if (scored.length === 0) return;
+
       const movedUp = changes.filter((c) => c.new_rank < c.old_rank).sort((a, b) => a.new_rank - b.new_rank);
       const movedDown = changes.filter((c) => c.new_rank > c.old_rank).sort((a, b) => b.new_rank - a.new_rank);
 
@@ -140,9 +143,17 @@ const BattleOverlay = forwardRef<BattleOverlayHandle>(function BattleOverlay(_, 
         }
       }
 
-      if (pairs.length === 0) return;
+      // If no rank changes, create pairs from top scorers against each other
+      if (pairs.length === 0 && scored.length >= 2) {
+        for (let i = 0; i < scored.length - 1; i += 2) {
+          pairs.push({ attacker: scored[i], defender: scored[i + 1] });
+        }
+      } else if (pairs.length === 0 && scored.length === 1) {
+        // Single scorer — duplicate as both sides
+        pairs.push({ attacker: scored[0], defender: scored[0] });
+      }
 
-      const hasNewFirst = movedUp.some((c) => c.new_rank === 1);
+      const hasNewFirst = movedUp.some((c) => c.new_rank === 1) || scored[0]?.new_rank === 1;
 
       setVisible(true);
       await sleep(600);

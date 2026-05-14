@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ChevronDown, ChevronUp, Loader2, Zap, ZapOff } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, Loader2, Zap, ZapOff, Trash2 } from "lucide-react";
 import { toast } from "@/components/ui/Toast";
 import CodeEditor from "@/components/admin/CodeEditor";
 import type { Round } from "@/types";
@@ -35,6 +35,7 @@ export default function RoundsPage() {
   const [creating, setCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const fetchRounds = useCallback(async () => {
     try {
@@ -97,6 +98,22 @@ export default function RoundsPage() {
       toast(err instanceof Error ? err.message : "Güncellenemedi", "error");
     } finally {
       setTogglingId(null);
+    }
+  };
+
+  const handleDelete = async (round: Round) => {
+    if (!confirm(`"${round.title}" silinecek. Emin misiniz?`)) return;
+    setDeletingId(round.id);
+    try {
+      const res = await fetch(`/api/rounds?id=${round.id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setRounds((prev) => prev.filter((r) => r.id !== round.id));
+      toast(`"${round.title}" silindi`, "success");
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Silinemedi", "error");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -230,6 +247,19 @@ export default function RoundsPage() {
                     >
                       {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                       {isExpanded ? "Gizle" : "Kodu Göster"}
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(round)}
+                      disabled={deletingId === round.id}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs
+                        text-red-400/60 hover:text-red-400 hover:bg-red-400/[0.08] transition-colors"
+                    >
+                      {deletingId === round.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-3 h-3" />
+                      )}
                     </button>
                   </div>
                 </div>

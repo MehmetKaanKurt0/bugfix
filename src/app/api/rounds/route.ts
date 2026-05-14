@@ -58,3 +58,23 @@ export async function PATCH(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json({ round: data });
 }
+
+export async function DELETE(req: NextRequest) {
+  if (!isAuthed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const id = req.nextUrl.searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "id gerekli" }, { status: 400 });
+
+  const supabase = createServerClient();
+
+  // Delete related submissions first
+  await supabase.from("submissions").delete().eq("round_id", id);
+
+  // Delete related events
+  await supabase.from("events").delete().eq("data->>round_id", id);
+
+  const { error } = await supabase.from("rounds").delete().eq("id", id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
+}
