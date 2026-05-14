@@ -6,7 +6,10 @@ import {
   EffectComposer,
   Bloom,
   Vignette,
+  ChromaticAberration,
+  Noise,
 } from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -41,19 +44,24 @@ const BATTLE_SCENES = [BombScene, LightningScene, MeteorScene, LaserScene, Porta
 function SceneRenderer({
   phase,
   onPhaseComplete,
+  onImpact,
 }: {
   phase: ScenePhase;
   onPhaseComplete: () => void;
+  onImpact: (active: boolean) => void;
 }) {
   const startTime = useRef(0);
   const completed = useRef(false);
+  const impactTriggered = useRef(false);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     startTime.current = 0;
     completed.current = false;
+    impactTriggered.current = false;
     setProgress(0);
-  }, [phase]);
+    onImpact(false);
+  }, [phase, onImpact]);
 
   useFrame(({ clock }) => {
     if (completed.current) return;
@@ -65,6 +73,12 @@ function SceneRenderer({
     const elapsed = clock.elapsedTime - startTime.current;
     const p = Math.min(elapsed / phase.duration, 1);
     setProgress(p);
+
+    if (phase.type === "battle" && p >= 0.4 && p <= 0.7 && !impactTriggered.current) {
+      impactTriggered.current = true;
+      onImpact(true);
+      setTimeout(() => onImpact(false), 600);
+    }
 
     if (p >= 1 && !completed.current) {
       completed.current = true;
@@ -113,6 +127,8 @@ export default function CinematicOverlay({
   onPhaseComplete,
 }: CinematicOverlayProps) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const [impactActive, setImpactActive] = useState(false);
+  const chromaticOffset = impactActive ? new THREE.Vector2(0.012, 0.012) : new THREE.Vector2(0.001, 0.001);
 
   return (
     <AnimatePresence>
@@ -144,7 +160,7 @@ export default function CinematicOverlay({
           >
             <color attach="background" args={["#000000"]} />
 
-            <SceneRenderer phase={phase} onPhaseComplete={onPhaseComplete} />
+            <SceneRenderer phase={phase} onPhaseComplete={onPhaseComplete} onImpact={setImpactActive} />
 
             <EffectComposer>
               <Bloom
@@ -153,6 +169,13 @@ export default function CinematicOverlay({
                 intensity={1.5}
                 mipmapBlur={!isMobile}
               />
+              <ChromaticAberration
+                offset={chromaticOffset}
+                radialModulation={false}
+                modulationOffset={0.5}
+                blendFunction={BlendFunction.NORMAL}
+              />
+              <Noise blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.15} />
               <Vignette eskil={false} offset={0.1} darkness={0.8} />
             </EffectComposer>
           </Canvas>

@@ -333,6 +333,24 @@ export default function LeaderboardPage() {
       <CinematicBattleManager />
       <ConnectionBanner />
 
+      {/* Blur overlay during battle animation */}
+      <AnimatePresence>
+        {isAnimating && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-[9998] pointer-events-none"
+            style={{
+              backdropFilter: "blur(4px)",
+              WebkitBackdropFilter: "blur(4px)",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Ambient orbs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden -z-10">
         <div

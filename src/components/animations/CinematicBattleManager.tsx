@@ -4,11 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { createBrowserClient } from "@/lib/supabase";
 import { useAppStore, type RankingChange } from "@/lib/store";
 import CinematicOverlay, { type BattlePair, type ScenePhase } from "./CinematicOverlay";
-import {
-  playBoom, playCrackling, playPewPew, playMeteor, playPortal, playVS, playConfetti,
-} from "@/lib/sounds";
-
-const ANIM_SOUNDS = [playBoom, playCrackling, playMeteor, playPewPew, playPortal];
+import { audioManager } from "./utils/audioManager";
 
 function buildBattlePairs(changes: RankingChange[]): BattlePair[] {
   const scored = changes.filter((c) => c.score_change > 0).sort((a, b) => b.score_change - a.score_change);
@@ -107,8 +103,6 @@ export default function CinematicBattleManager() {
   );
 
   const handlePhaseComplete = useCallback(() => {
-    const soundOn = useAppStore.getState().soundEnabled;
-
     phaseIndexRef.current += 1;
     const nextIdx = phaseIndexRef.current;
     const phases = phasesRef.current;
@@ -125,16 +119,7 @@ export default function CinematicBattleManager() {
     }
 
     const next = phases[nextIdx];
-
-    if (soundOn) {
-      if (next.type === "vs") playVS();
-      if (next.type === "battle") {
-        const sfx = ANIM_SOUNDS[next.animIndex % ANIM_SOUNDS.length];
-        setTimeout(sfx, 800);
-      }
-      if (next.type === "victory") setTimeout(playConfetti, 500);
-    }
-
+    audioManager.playForPhase(next.type, next.type === "battle" ? next.animIndex : undefined);
     setCurrentPhase(next);
   }, [setBattleComplete]);
 
