@@ -80,6 +80,13 @@ ${buggy_code}
 === KATILIMCININ DÜZELTMESİ ===
 ${submitted_code}`;
 
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json(
+      { error: "OPENAI_API_KEY environment variable tanımlı değil." },
+      { status: 500 }
+    );
+  }
+
   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
   let result = null;
   let rawContent = "";
@@ -107,6 +114,8 @@ ${submitted_code}`;
       break;
     } catch (err) {
       lastErr = err;
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error(`[grade] OpenAI attempt ${attempt + 1}/${MAX_RETRIES} failed:`, errMsg);
       if (attempt < MAX_RETRIES - 1) {
         await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt)));
       }
@@ -114,8 +123,9 @@ ${submitted_code}`;
   }
 
   if (!result && !rawContent) {
+    const errMsg = lastErr instanceof Error ? lastErr.message : String(lastErr);
     return NextResponse.json(
-      { error: "AI yanıt vermedi. Lütfen tekrar deneyin.", raw: rawContent, details: String(lastErr) },
+      { error: "AI yanıt vermedi. Lütfen tekrar deneyin.", details: errMsg },
       { status: 502 }
     );
   }
