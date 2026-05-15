@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openai } from "@/lib/openai";
+import { getOpenAI } from "@/lib/openai";
 import { createServerClient } from "@/lib/supabase";
 
 function isAuthed(req: NextRequest) {
@@ -88,7 +88,7 @@ ${submitted_code}`;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
-      const completion = await openai.chat.completions.create({
+      const completion = await getOpenAI().chat.completions.create({
         model,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
