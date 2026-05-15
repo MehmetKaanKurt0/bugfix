@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { groq } from "@/lib/groq";
+import { openai } from "@/lib/openai";
 import { createServerClient } from "@/lib/supabase";
 
 function isAuthed(req: NextRequest) {
@@ -80,49 +80,44 @@ ${buggy_code}
 === KATILIMCININ DÜZELTMESİ ===
 ${submitted_code}`;
 
-  const models = ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile"];
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
   let result = null;
   let rawContent = "";
   const MAX_RETRIES = 3;
+  let lastErr: unknown = null;
 
-  for (const model of models) {
-    let lastErr: unknown = null;
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      const completion = await openai.chat.completions.create({
+        model,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: 0.7,
+        max_tokens: 2048,
+      });
 
-    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-      try {
-        const completion = await groq.chat.completions.create({
-          model,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: userPrompt },
-          ],
-          temperature: 0.7,
-          max_tokens: 2048,
-        });
+      rawContent = completion.choices[0]?.message?.content || "";
 
-        rawContent = completion.choices[0]?.message?.content || "";
-
-        const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          result = JSON.parse(jsonMatch[0]);
-        }
-        break;
-      } catch (err) {
-        lastErr = err;
-        if (attempt < MAX_RETRIES - 1) {
-          await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt)));
-        }
+      const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        result = JSON.parse(jsonMatch[0]);
+      }
+      break;
+    } catch (err) {
+      lastErr = err;
+      if (attempt < MAX_RETRIES - 1) {
+        await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt)));
       }
     }
+  }
 
-    if (result) break;
-
-    if (model === models[models.length - 1] && !result && !rawContent) {
-      return NextResponse.json(
-        { error: "AI yanıt vermedi. Lütfen tekrar deneyin.", raw: rawContent, details: String(lastErr) },
-        { status: 502 }
-      );
-    }
+  if (!result && !rawContent) {
+    return NextResponse.json(
+      { error: "AI yanıt vermedi. Lütfen tekrar deneyin.", raw: rawContent, details: String(lastErr) },
+      { status: 502 }
+    );
   }
 
   if (!result) {
